@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    tools {
+        // Define the Maven installation as 'maven_3_3_9' (if configured in Jenkins)
+        maven 'maven_3_3_9'
+    }
+
+    stages {
+        stage('Import SCM') {
+            steps {
+                // Checkout the source code from Git
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: 'master']],
+                    userRemoteConfigs: [[url: 'https://github.com/pugazhendhiram/dockerLearning']]
+                ])
+
+                // Print a message
+                echo 'Hello'
+            }
+        }
+
+        stage('maven build') {
+            steps {
+                script {
+                    bat 'mvn clean install'
+                }
+            }
+        }
+
+        stage('build docker image') {
+            steps {
+                script {
+                    bat 'docker build -t pugazhram/spring-boot-docker.jar:version-jenkins-01 .'
+                }
+            }
+        }
+
+        stage('Push docker login') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: '1b396ea5-145d-42dd-a162-7e4ee223502b', passwordVariable: 'dockerpass', usernameVariable: 'dockeruser')]) {
+                        bat "docker login --username=${dockeruser} --password=${dockerpass}"
+                    }
+                }
+            }
+        }
+
+        stage('build image Push') {
+            steps {
+                script {
+                    bat 'docker push pugazhram/spring-boot-docker.jar:version-jenkins-01'
+                }
+            }
+        }
+    }
+}
