@@ -40,7 +40,7 @@ pipeline {
         stage('Push docker login') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockeruser', usernameVariable: 'dockerpass')]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockercred', passwordVariable: 'dockerpasskey', usernameVariable: 'dockerus')]) {
                         bat "docker login --username=${dockeruser} --password=${dockerpass}"
                     }
                 }
