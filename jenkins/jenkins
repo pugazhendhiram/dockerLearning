@@ -41,7 +41,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockercred', passwordVariable: 'dockerpasskey', usernameVariable: 'dockerus')]) {
-                        bat "docker login --username=${dockeruser} --password=${dockerpass}"
+                        bat "docker login --username=${dockerus} --password=${dockerpasskey}"
                     }
                 }
             }
